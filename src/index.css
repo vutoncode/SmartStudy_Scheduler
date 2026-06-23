@@ -1,0 +1,157 @@
+:root {
+  --font-sans: 'Arial', sans-serif;
+  
+  /* Color Palette - Simple Light Blue Theme */
+  --bg-base: #f0f6fa;
+  --bg-surface: #ffffff;
+  --bg-surface-hover: #f8fafc;
+  --border-color: #cbd5e1;
+  --border-glow: #38bdf8;
+  
+  --primary-gradient: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  --accent-gradient: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
+  
+  --color-primary: #0284c7;
+  --color-primary-light: #e0f2fe;
+  --color-accent: #0ea5e9;
+  --color-accent-light: #f0f9ff;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+  --color-success: #10b981;
+  --color-text-primary: #1e293b;
+  --color-text-muted: #64748b;
+  --color-text-dim: #94a3b8;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+  
+  --transition-fast: 0.1s ease;
+  --transition-normal: 0.2s ease-in-out;
+}
+
+/* Light / Dark overrides: simplify both to be light blue first */
+html, body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-base) !important;
+  color: var(--color-text-primary) !important;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Glass panel rewritten to Simple Light card */
+.glass-panel {
+  background: var(--bg-surface);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+}
+
+.glass-panel:hover {
+  border-color: #bae6fd;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* Form controls overrides */
+input, select, textarea {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: var(--color-text-primary) !important;
+  border-radius: 8px !important;
+  font-size: 0.9rem !important;
+  transition: all var(--transition-fast) !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #0ea5e9 !important;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15) !important;
+}
+
+/* Sidebar Custom Simple Light-Blue styling */
+.nav-link-custom {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.nav-link-custom:hover {
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+.nav-link-custom.active {
+  color: var(--color-primary) !important;
+  background-color: var(--color-primary-light) !important;
+  font-weight: 600;
+}
+
+/* Utility layout helpers */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gradient-text {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.pulse-dot {
+  position: relative;
+}
+
+.pulse-dot::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-danger);
+  border-radius: 50%;
+  border: 1px solid #ffffff;
+  animation: pulse-animation 1.5s infinite;
+}
+
+@keyframes pulse-animation {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.6; }
+}
