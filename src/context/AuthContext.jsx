@@ -31,9 +31,17 @@ export const AuthProvider = ({ children }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email, password) => {
+  const signUp = async (email, password, name) => {
     if (!supabase) return { error: { message: "Chưa kết nối Supabase" } };
-    return supabase.auth.signUp({ email, password });
+    return supabase.auth.signUp({ 
+      email, 
+      password,
+      options: {
+        data: {
+          display_name: name,
+        }
+      }
+    });
   };
 
   const signIn = async (email, password) => {
