@@ -9,6 +9,11 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+
     // Lấy session hiện tại
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -27,14 +32,17 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const signUp = async (email, password) => {
+    if (!supabase) return { error: { message: "Chưa kết nối Supabase" } };
     return supabase.auth.signUp({ email, password });
   };
 
   const signIn = async (email, password) => {
+    if (!supabase) return { error: { message: "Chưa kết nối Supabase" } };
     return supabase.auth.signInWithPassword({ email, password });
   };
 
   const signOut = async () => {
+    if (!supabase) return { error: { message: "Chưa kết nối Supabase" } };
     return supabase.auth.signOut();
   };
 
