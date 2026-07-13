@@ -28,9 +28,10 @@ const Login = () => {
 
   return (
     <div className="auth-container">
-      <div className="auth-card">
-        <h2>Đăng nhập</h2>
-        <p>Chào mừng bạn trở lại Smart Study Scheduler</p>
+      <div className="auth-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <img src="/logo.png" alt="Smart Study Logo" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '50%', marginBottom: '1rem' }} />
+        <h2 style={{ margin: 0, marginBottom: '0.5rem' }}>Đăng nhập</h2>
+        <p style={{ marginTop: 0, marginBottom: '1.5rem', textAlign: 'center' }}>Chào mừng bạn trở lại Smart Study Scheduler</p>
         
         {error && <div className="auth-error">{error}</div>}
 

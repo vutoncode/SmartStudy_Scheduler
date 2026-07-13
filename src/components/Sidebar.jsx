@@ -7,8 +7,9 @@ const Sidebar = () => {
 
   return (
     <aside className="sidebar">
-      <div className="sidebar-header">
-        <h2>Smart Study</h2>
+      <div className="sidebar-header" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', padding: '1.5rem 1rem' }}>
+        <img src="/logo.png" alt="Smart Study Logo" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '50%' }} />
+        <h2 style={{ margin: 0, fontSize: '1.25rem' }}>Smart Study</h2>
       </div>
       
       <nav className="sidebar-nav">

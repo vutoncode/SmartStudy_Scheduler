@@ -1,20 +1,21 @@
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
-  'https://qpkfajmgarvyypiedwpi.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFwa2Zham1nYXJ2eXlwaWVkd3BpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM5Mzk2NDIsImV4cCI6MjA5OTUxNTY0Mn0.w8ZfbagLtC0RJFoCLl45eng5bYc9bOB8i0q7e6VpxgE'
+  'https://ugxqdtlbchojkxrlnkyv.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVneHFkdGxiY2hvamt4cmxua3l2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4Mzk0MTMwMiwiZXhwIjoyMDk5NTE3MzAyfQ.2Eu2gykJ9IwkkFkv0BV8w0WZHqs69BVjX7fftRQpFA4'
 );
 
 async function createAdmin() {
-  const { data, error } = await supabase.auth.signUp({
-    email: 'vu.admin@gmail.com',
+  const { data, error } = await supabase.auth.admin.createUser({
+    email: 'admin@gmail.com',
     password: '12345678',
+    email_confirm: true
   });
 
   if (error) {
-    console.error('Error creating user:', error.message);
+    console.error('Error creating user via Admin API:', error.message);
   } else {
-    console.log('Success! Admin user created.');
+    console.log('Success! Admin user created via Admin API:', data.user.email);
   }
 }
 
