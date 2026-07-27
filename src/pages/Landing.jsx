@@ -60,30 +60,18 @@ const Landing = () => {
             </div>
           </div>
 
-          {/* Right Visual Content (CSS layout simulating images) */}
-          <div style={{ flex: '1 1 500px', position: 'relative', height: '600px', display: 'flex', justifyContent: 'center' }}>
-            
-            {/* Top right circular block */}
-            <div style={{
-              position: 'absolute', top: '20px', right: '0', width: '350px', height: '350px',
-              borderRadius: '50%', backgroundColor: '#e0e7ff', overflow: 'hidden',
-              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center'
-            }}>
-               <div style={{ fontSize: '4rem' }}>📚</div>
-            </div>
-
-            {/* Bottom left rounded block */}
-            <div style={{
-              position: 'absolute', bottom: '20px', left: '10%', width: '320px', height: '400px',
-              borderRadius: '24px', backgroundColor: '#f1f5f9', border: '1px solid #e2e8f0',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', overflow: 'hidden',
-              display: 'flex', flexDirection: 'column', padding: '1.5rem'
-            }}>
-              <div style={{ width: '100%', height: '60%', backgroundColor: '#cbd5e1', borderRadius: '12px', marginBottom: '1rem' }}></div>
-              <div style={{ width: '80%', height: '20px', backgroundColor: '#94a3b8', borderRadius: '4px', marginBottom: '0.5rem' }}></div>
-              <div style={{ width: '60%', height: '20px', backgroundColor: '#94a3b8', borderRadius: '4px' }}></div>
-            </div>
+          {/* Right Visual Content (Calendar Image) */}
+          <div style={{ flex: '1 1 500px', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <img 
+              src="/calendar-hero.png" 
+              alt="Calendar Interface" 
+              style={{ 
+                maxWidth: '100%', 
+                height: 'auto', 
+                borderRadius: '16px', 
+                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' 
+              }} 
+            />
           </div>
 
         </div>
