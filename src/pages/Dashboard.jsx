@@ -82,77 +82,48 @@ const Dashboard = () => {
 
       {loading ? <p>Đang tải dữ liệu...</p> : (
         <>
-          {/* Statistics Section (Bar Chart) */}
+          {/* Statistics Section (Pie Chart) */}
           <div style={{ background: 'white', padding: '2rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ margin: 0 }}>Thống kê tiến độ theo môn học</h2>
+              <h2 style={{ margin: 0 }}>Thống kê tổng quan</h2>
             </div>
             
-            {Object.keys(subjectStats).length === 0 ? (
+            {tasks.length === 0 ? (
               <p>Chưa có dữ liệu thống kê.</p>
             ) : (
-              <div>
-                <div style={{ position: 'relative', height: '300px', width: '100%', padding: '20px 40px 40px 60px' }}>
-                  {/* Y axis */}
-                  <div style={{ position: 'absolute', left: '60px', top: '10px', bottom: '40px', width: '1.5px', background: 'black', zIndex: 0 }}>
-                    {/* Arrow */}
-                    <div style={{ position: 'absolute', top: '-10px', left: '-4.5px', width: '0', height: '0', borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderBottom: '10px solid black' }}></div>
-                    <span style={{ position: 'absolute', top: '-25px', left: '-30px', fontSize: '14px', whiteSpace: 'nowrap' }}>Số lượng</span>
-                  </div>
-                  
-                  {/* X axis */}
-                  <div style={{ position: 'absolute', left: '60px', right: '10px', bottom: '40px', height: '1.5px', background: 'black', zIndex: 0 }}>
-                    {/* Arrow */}
-                    <div style={{ position: 'absolute', right: '-10px', top: '-4.5px', width: '0', height: '0', borderTop: '5px solid transparent', borderBottom: '5px solid transparent', borderLeft: '10px solid black' }}></div>
-                    <span style={{ position: 'absolute', right: '-30px', bottom: '-25px', fontSize: '14px', whiteSpace: 'nowrap' }}>Môn học</span>
-                  </div>
-
-                  {/* Bars Container */}
-                  <div style={{ display: 'flex', height: '100%', alignItems: 'flex-end', justifyContent: 'space-around', position: 'relative', zIndex: 1 }}>
-                    {(() => {
-                      let maxCount = 1;
-                      Object.values(subjectStats).forEach(stat => {
-                        // Max is now based on total of active + done (which is total, but we don't display total)
-                        if (stat.total > maxCount) maxCount = stat.total;
-                      });
-
-                      return Object.keys(subjectStats).map(subName => {
-                        const stat = subjectStats[subName];
-                        const active = stat.total - stat.done;
-                        const heightDone = (stat.done / maxCount) * 100;
-                        const heightActive = (active / maxCount) * 100;
-                        
-                        return (
-                          <div key={subName} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
-                            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '4px', height: '100%', paddingBottom: '10px' }}>
-                                {/* Done Bar */}
-                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', height: '100%' }}>
-                                  <span style={{ fontSize: '12px', marginBottom: '4px', fontWeight: '500' }}>{stat.done}</span>
-                                  <div style={{ width: '30px', height: `${heightDone}%`, background: '#22c55e', borderRadius: '4px 4px 0 0', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}></div>
-                                </div>
-                                {/* Active Bar */}
-                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', height: '100%' }}>
-                                  <span style={{ fontSize: '12px', marginBottom: '4px', fontWeight: '500' }}>{active}</span>
-                                  <div style={{ width: '30px', height: `${heightActive}%`, background: '#94a3b8', borderRadius: '4px 4px 0 0', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}></div>
-                                </div>
-                            </div>
-                            <div style={{ fontSize: '14px', textAlign: 'center', width: '80px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{subName}</div>
-                          </div>
-                        );
-                      });
-                    })()}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ position: 'relative', width: '250px', height: '250px' }}>
+                  <svg viewBox="0 0 36 36" style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
+                    {/* Active/Todo portion (Gray) */}
+                    <circle cx="18" cy="18" r="15.91549431" fill="transparent" stroke="#94a3b8" strokeWidth="6" />
+                    
+                    {/* Done portion (Green) */}
+                    <circle cx="18" cy="18" r="15.91549431" fill="transparent" stroke="#22c55e" strokeWidth="6"
+                      strokeDasharray={`${doneTasks.length === 0 && activeTasks.length === 0 ? 0 : (doneTasks.length / tasks.length) * 100} 100`}
+                      strokeDashoffset="0" 
+                      style={{ transition: 'stroke-dasharray 1s ease-out' }}
+                    />
+                  </svg>
+                  <div style={{ 
+                    position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', 
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' 
+                  }}>
+                    <span style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1e293b' }}>
+                      {tasks.length > 0 ? Math.round((doneTasks.length / tasks.length) * 100) : 0}%
+                    </span>
+                    <span style={{ fontSize: '1rem', color: '#64748b' }}>Hoàn thành</span>
                   </div>
                 </div>
 
                 {/* Legend */}
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '30px', marginTop: '10px' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '30px', marginTop: '20px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{ width: '20px', height: '20px', background: '#22c55e', borderRadius: '4px' }}></div>
-                    <span style={{ fontSize: '14px' }}>Hoàn thành</span>
+                    <div style={{ width: '20px', height: '20px', background: '#22c55e', borderRadius: '50%' }}></div>
+                    <span style={{ fontSize: '14px' }}>Hoàn thành ({doneTasks.length})</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{ width: '20px', height: '20px', background: '#94a3b8', borderRadius: '4px' }}></div>
-                    <span style={{ fontSize: '14px' }}>Chưa làm</span>
+                    <div style={{ width: '20px', height: '20px', background: '#94a3b8', borderRadius: '50%' }}></div>
+                    <span style={{ fontSize: '14px' }}>Chưa làm ({activeTasks.length})</span>
                   </div>
                 </div>
               </div>

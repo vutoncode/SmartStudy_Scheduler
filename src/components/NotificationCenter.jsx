@@ -36,8 +36,6 @@ const NotificationCenter = () => {
     return () => clearInterval(interval);
   }, []);
 
-  if (notifications.length === 0) return null;
-
   return (
     <div style={{ position: 'relative' }}>
       <button 
@@ -45,14 +43,16 @@ const NotificationCenter = () => {
         style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.5rem', position: 'relative' }}
       >
         🔔
-        <span style={{ 
-          position: 'absolute', top: 0, right: 0, 
-          background: 'red', color: 'white', 
-          borderRadius: '50%', padding: '2px 6px', 
-          fontSize: '0.75rem', fontWeight: 'bold' 
-        }}>
-          {notifications.length}
-        </span>
+        {notifications.length > 0 && (
+          <span style={{ 
+            position: 'absolute', top: 0, right: 0, 
+            background: 'red', color: 'white', 
+            borderRadius: '50%', padding: '2px 6px', 
+            fontSize: '0.75rem', fontWeight: 'bold' 
+          }}>
+            {notifications.length}
+          </span>
+        )}
       </button>
 
       {isOpen && (

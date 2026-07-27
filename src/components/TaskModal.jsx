@@ -1,21 +1,80 @@
 import React, { useState, useEffect } from 'react';
 import { fetchWithAuth } from '../lib/api';
 
+const ScrollColumn = ({ options, value, onChange }) => {
+  const ref = React.useRef();
+  
+  React.useEffect(() => {
+    if (ref.current) {
+      const idx = options.indexOf(value);
+      if (idx !== -1) ref.current.scrollTop = idx * 40;
+    }
+  }, []);
+
+  const handleScroll = (e) => {
+    const idx = Math.round(e.target.scrollTop / 40);
+    if (options[idx] && options[idx] !== value) {
+      onChange(options[idx]);
+    }
+  };
+
+  return (
+    <div 
+      ref={ref}
+      onScroll={handleScroll}
+      style={{ 
+        height: '120px', width: '60px', overflowY: 'auto', scrollSnapType: 'y mandatory',
+        scrollbarWidth: 'none', msOverflowStyle: 'none', background: '#f8fafc', borderRadius: '8px',
+        border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column'
+      }}
+    >
+      <div style={{ height: '40px', flexShrink: 0 }}></div>
+      {options.map(opt => (
+        <div key={opt} onClick={() => {
+          if (ref.current) ref.current.scrollTo({ top: options.indexOf(opt) * 40, behavior: 'smooth' });
+          onChange(opt);
+        }} style={{ 
+          height: '40px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          scrollSnapAlign: 'center', fontSize: value === opt ? '1.25rem' : '1rem',
+          fontWeight: value === opt ? 'bold' : 'normal',
+          color: value === opt ? 'white' : '#64748b',
+          background: value === opt ? '#3b82f6' : 'transparent',
+          cursor: 'pointer', transition: 'all 0.2s'
+        }}>
+          {opt}
+        </div>
+      ))}
+      <div style={{ height: '40px', flexShrink: 0 }}></div>
+    </div>
+  );
+};
+
+const hours = Array.from({length: 12}, (_, i) => String(i === 0 ? 12 : i).padStart(2, '0'));
+const minutes = Array.from({length: 60}, (_, i) => String(i).padStart(2, '0'));
+const ampms = ['SA', 'CH'];
+
 const TaskModal = ({ isOpen, onClose, onTaskAdded }) => {
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(false);
-  const initialForm = { title: '', description: '', subject_id: '', deadline: '', priority: 'medium', status: 'todo' };
+  const initialForm = { title: '', description: '', subject_id: '', priority: 'medium', status: 'todo' };
   const [formData, setFormData] = useState(initialForm);
+  
+  const [dateStr, setDateStr] = useState('');
+  const [hour, setHour] = useState('12');
+  const [minute, setMinute] = useState('00');
+  const [ampm, setAmpm] = useState('SA');
 
   useEffect(() => {
     if (isOpen) {
-      // Fetch subjects when modal opens
       fetchWithAuth('/api/subjects')
         .then(data => setSubjects(data))
         .catch(err => console.error("Error fetching subjects:", err));
       
-      // Reset form
       setFormData(initialForm);
+      setDateStr('');
+      setHour('12');
+      setMinute('00');
+      setAmpm('SA');
     }
   }, [isOpen]);
 
@@ -25,7 +84,17 @@ const TaskModal = ({ isOpen, onClose, onTaskAdded }) => {
       setLoading(true);
       const payload = { ...formData };
       if (!payload.subject_id) payload.subject_id = null;
-      if (!payload.deadline) payload.deadline = null;
+      
+      let finalDeadline = null;
+      if (dateStr) {
+         let h = parseInt(hour, 10);
+         if (ampm === 'CH' && h !== 12) h += 12;
+         if (ampm === 'SA' && h === 12) h = 0;
+         const d = new Date(dateStr);
+         d.setHours(h, parseInt(minute, 10), 0);
+         finalDeadline = d.toISOString();
+      }
+      payload.deadline = finalDeadline;
 
       await fetchWithAuth('/api/tasks', {
         method: 'POST',
@@ -75,16 +144,23 @@ const TaskModal = ({ isOpen, onClose, onTaskAdded }) => {
               </select>
             </div>
             <div>
-              <label style={{ display: 'block', marginBottom: '0.25rem', fontWeight: 'bold' }}>Hạn chót</label>
-              <input type="datetime-local" value={formData.deadline ? new Date(formData.deadline).toISOString().slice(0, 16) : ''} onChange={e => setFormData({...formData, deadline: e.target.value})} style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #ccc' }} />
-            </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.25rem', fontWeight: 'bold' }}>Mức độ ưu tiên (Màu sắc)</label>
+              <label style={{ display: 'block', marginBottom: '0.25rem', fontWeight: 'bold' }}>Mức độ ưu tiên</label>
               <select value={formData.priority} onChange={e => setFormData({...formData, priority: e.target.value})} style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #ccc' }}>
                 <option value="low">Thấp (Xanh dương)</option>
                 <option value="medium">Trung bình (Vàng)</option>
                 <option value="high">Cao (Đỏ)</option>
               </select>
+            </div>
+            <div style={{ gridColumn: '1 / -1', background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Hạn chót</label>
+              <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+                <input type="date" value={dateStr} onChange={e => setDateStr(e.target.value)} style={{ padding: '0.75rem', borderRadius: '6px', border: '1px solid #ccc' }} />
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <ScrollColumn options={hours} value={hour} onChange={setHour} />
+                  <ScrollColumn options={minutes} value={minute} onChange={setMinute} />
+                  <ScrollColumn options={ampms} value={ampm} onChange={setAmpm} />
+                </div>
+              </div>
             </div>
           </div>
           <div style={{ marginBottom: '1.5rem' }}>
