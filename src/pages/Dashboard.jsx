@@ -112,36 +112,31 @@ const Dashboard = () => {
                     {(() => {
                       let maxCount = 1;
                       Object.values(subjectStats).forEach(stat => {
+                        // Max is now based on total of active + done (which is total, but we don't display total)
                         if (stat.total > maxCount) maxCount = stat.total;
                       });
 
                       return Object.keys(subjectStats).map(subName => {
                         const stat = subjectStats[subName];
                         const active = stat.total - stat.done;
-                        const heightTotal = (stat.total / maxCount) * 100;
                         const heightDone = (stat.done / maxCount) * 100;
                         const heightActive = (active / maxCount) * 100;
                         
                         return (
                           <div key={subName} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
-                            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '0', height: '100%', paddingBottom: '10px' }}>
-                                {/* Total Bar */}
-                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', height: '100%' }}>
-                                  <span style={{ fontSize: '12px', marginBottom: '4px' }}>{stat.total}</span>
-                                  <div style={{ width: '30px', height: `${heightTotal}%`, background: 'white', border: '1px solid black', borderBottom: 'none' }}></div>
-                                </div>
+                            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '4px', height: '100%', paddingBottom: '10px' }}>
                                 {/* Done Bar */}
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', height: '100%' }}>
-                                  <span style={{ fontSize: '12px', marginBottom: '4px' }}>{stat.done}</span>
-                                  <div style={{ width: '30px', height: `${heightDone}%`, background: 'repeating-linear-gradient(45deg, transparent, transparent 2px, black 2px, black 4px)', border: '1px solid black', borderBottom: 'none', backgroundColor: 'white' }}></div>
+                                  <span style={{ fontSize: '12px', marginBottom: '4px', fontWeight: '500' }}>{stat.done}</span>
+                                  <div style={{ width: '30px', height: `${heightDone}%`, background: '#22c55e', borderRadius: '4px 4px 0 0', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}></div>
                                 </div>
                                 {/* Active Bar */}
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', height: '100%' }}>
-                                  <span style={{ fontSize: '12px', marginBottom: '4px' }}>{active}</span>
-                                  <div style={{ width: '30px', height: `${heightActive}%`, background: '#9ca3af', border: '1px solid black', borderBottom: 'none' }}></div>
+                                  <span style={{ fontSize: '12px', marginBottom: '4px', fontWeight: '500' }}>{active}</span>
+                                  <div style={{ width: '30px', height: `${heightActive}%`, background: '#94a3b8', borderRadius: '4px 4px 0 0', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}></div>
                                 </div>
                             </div>
-                            <div style={{ fontSize: '14px', textAlign: 'center', width: '100px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{subName}</div>
+                            <div style={{ fontSize: '14px', textAlign: 'center', width: '80px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{subName}</div>
                           </div>
                         );
                       });
@@ -152,15 +147,11 @@ const Dashboard = () => {
                 {/* Legend */}
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '30px', marginTop: '10px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{ width: '30px', height: '20px', background: 'white', border: '2px solid black' }}></div>
-                    <span style={{ fontSize: '14px' }}>Tổng số</span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{ width: '30px', height: '20px', background: 'repeating-linear-gradient(45deg, transparent, transparent 2px, black 2px, black 4px)', border: '2px solid black', backgroundColor: 'white' }}></div>
+                    <div style={{ width: '20px', height: '20px', background: '#22c55e', borderRadius: '4px' }}></div>
                     <span style={{ fontSize: '14px' }}>Hoàn thành</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{ width: '30px', height: '20px', background: '#9ca3af', border: '2px solid black' }}></div>
+                    <div style={{ width: '20px', height: '20px', background: '#94a3b8', borderRadius: '4px' }}></div>
                     <span style={{ fontSize: '14px' }}>Chưa làm</span>
                   </div>
                 </div>
