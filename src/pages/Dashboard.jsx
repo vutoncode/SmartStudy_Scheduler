@@ -91,27 +91,79 @@ const Dashboard = () => {
             {Object.keys(subjectStats).length === 0 ? (
               <p>Chưa có dữ liệu thống kê.</p>
             ) : (
-              <div style={{ display: 'flex', alignItems: 'flex-end', gap: '1rem', height: '200px', paddingBottom: '2rem', borderBottom: '1px solid #e2e8f0' }}>
-                {Object.keys(subjectStats).map(subName => {
-                  const stat = subjectStats[subName];
-                  const rate = Math.round((stat.done / stat.total) * 100) || 0;
-                  return (
-                    <div key={subName} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', justifyContent: 'flex-end' }}>
-                      <div style={{ fontSize: '0.75rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>{rate}%</div>
-                      <div style={{ 
-                        width: '40px', 
-                        height: `${rate}%`, 
-                        minHeight: rate === 0 ? '4px' : 'auto',
-                        background: stat.color, 
-                        borderRadius: '4px 4px 0 0',
-                        transition: 'height 0.5s'
-                      }}></div>
-                      <div style={{ fontSize: '0.75rem', textAlign: 'center', marginTop: '0.5rem', height: '30px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        {subName}
-                      </div>
-                    </div>
-                  );
-                })}
+              <div>
+                <div style={{ position: 'relative', height: '300px', width: '100%', padding: '20px 40px 40px 60px' }}>
+                  {/* Y axis */}
+                  <div style={{ position: 'absolute', left: '60px', top: '10px', bottom: '40px', width: '1.5px', background: 'black', zIndex: 0 }}>
+                    {/* Arrow */}
+                    <div style={{ position: 'absolute', top: '-10px', left: '-4.5px', width: '0', height: '0', borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderBottom: '10px solid black' }}></div>
+                    <span style={{ position: 'absolute', top: '-25px', left: '-30px', fontSize: '14px', whiteSpace: 'nowrap' }}>Số lượng</span>
+                  </div>
+                  
+                  {/* X axis */}
+                  <div style={{ position: 'absolute', left: '60px', right: '10px', bottom: '40px', height: '1.5px', background: 'black', zIndex: 0 }}>
+                    {/* Arrow */}
+                    <div style={{ position: 'absolute', right: '-10px', top: '-4.5px', width: '0', height: '0', borderTop: '5px solid transparent', borderBottom: '5px solid transparent', borderLeft: '10px solid black' }}></div>
+                    <span style={{ position: 'absolute', right: '-30px', bottom: '-25px', fontSize: '14px', whiteSpace: 'nowrap' }}>Môn học</span>
+                  </div>
+
+                  {/* Bars Container */}
+                  <div style={{ display: 'flex', height: '100%', alignItems: 'flex-end', justifyContent: 'space-around', position: 'relative', zIndex: 1 }}>
+                    {(() => {
+                      let maxCount = 1;
+                      Object.values(subjectStats).forEach(stat => {
+                        if (stat.total > maxCount) maxCount = stat.total;
+                      });
+
+                      return Object.keys(subjectStats).map(subName => {
+                        const stat = subjectStats[subName];
+                        const active = stat.total - stat.done;
+                        const heightTotal = (stat.total / maxCount) * 100;
+                        const heightDone = (stat.done / maxCount) * 100;
+                        const heightActive = (active / maxCount) * 100;
+                        
+                        return (
+                          <div key={subName} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+                            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '0', height: '100%', paddingBottom: '10px' }}>
+                                {/* Total Bar */}
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', height: '100%' }}>
+                                  <span style={{ fontSize: '12px', marginBottom: '4px' }}>{stat.total}</span>
+                                  <div style={{ width: '30px', height: `${heightTotal}%`, background: 'white', border: '1px solid black', borderBottom: 'none' }}></div>
+                                </div>
+                                {/* Done Bar */}
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', height: '100%' }}>
+                                  <span style={{ fontSize: '12px', marginBottom: '4px' }}>{stat.done}</span>
+                                  <div style={{ width: '30px', height: `${heightDone}%`, background: 'repeating-linear-gradient(45deg, transparent, transparent 2px, black 2px, black 4px)', border: '1px solid black', borderBottom: 'none', backgroundColor: 'white' }}></div>
+                                </div>
+                                {/* Active Bar */}
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', height: '100%' }}>
+                                  <span style={{ fontSize: '12px', marginBottom: '4px' }}>{active}</span>
+                                  <div style={{ width: '30px', height: `${heightActive}%`, background: '#9ca3af', border: '1px solid black', borderBottom: 'none' }}></div>
+                                </div>
+                            </div>
+                            <div style={{ fontSize: '14px', textAlign: 'center', width: '100px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{subName}</div>
+                          </div>
+                        );
+                      });
+                    })()}
+                  </div>
+                </div>
+
+                {/* Legend */}
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '30px', marginTop: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ width: '30px', height: '20px', background: 'white', border: '2px solid black' }}></div>
+                    <span style={{ fontSize: '14px' }}>Tổng số</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ width: '30px', height: '20px', background: 'repeating-linear-gradient(45deg, transparent, transparent 2px, black 2px, black 4px)', border: '2px solid black', backgroundColor: 'white' }}></div>
+                    <span style={{ fontSize: '14px' }}>Hoàn thành</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ width: '30px', height: '20px', background: '#9ca3af', border: '2px solid black' }}></div>
+                    <span style={{ fontSize: '14px' }}>Chưa làm</span>
+                  </div>
+                </div>
               </div>
             )}
           </div>
