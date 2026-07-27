@@ -64,6 +64,9 @@ const TaskModal = ({ isOpen, onClose, onTaskAdded }) => {
   const [minute, setMinute] = useState('00');
   const [ampm, setAmpm] = useState('SA');
 
+  const [isAddingSubject, setIsAddingSubject] = useState(false);
+  const [newSubject, setNewSubject] = useState({ name: '', color: '#3b82f6' });
+
   useEffect(() => {
     if (isOpen) {
       fetchWithAuth('/api/subjects')
@@ -75,8 +78,33 @@ const TaskModal = ({ isOpen, onClose, onTaskAdded }) => {
       setHour('12');
       setMinute('00');
       setAmpm('SA');
+      setIsAddingSubject(false);
+      setNewSubject({ name: '', color: '#3b82f6' });
     }
   }, [isOpen]);
+
+  const handleSaveNewSubject = async () => {
+    if (!newSubject.name.trim()) return;
+    try {
+      setLoading(true);
+      await fetchWithAuth('/api/subjects', {
+        method: 'POST',
+        body: JSON.stringify(newSubject)
+      });
+      const data = await fetchWithAuth('/api/subjects');
+      setSubjects(data);
+      const added = data.find(s => s.name === newSubject.name);
+      if (added) {
+        setFormData({...formData, subject_id: added.id});
+      }
+      setIsAddingSubject(false);
+      setNewSubject({ name: '', color: '#3b82f6' });
+    } catch (err) {
+      alert("Lỗi thêm môn học: " + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -138,10 +166,23 @@ const TaskModal = ({ isOpen, onClose, onTaskAdded }) => {
             </div>
             <div>
               <label style={{ display: 'block', marginBottom: '0.25rem', fontWeight: 'bold' }}>Môn học</label>
-              <select value={formData.subject_id || ''} onChange={e => setFormData({...formData, subject_id: e.target.value})} style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #ccc' }}>
-                <option value="">Không có</option>
-                {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-              </select>
+              {isAddingSubject ? (
+                <div style={{ display: 'flex', gap: '0.5rem', height: '42px' }}>
+                  <input type="text" placeholder="Tên môn..." value={newSubject.name} onChange={e => setNewSubject({...newSubject, name: e.target.value})} style={{ flex: 1, padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc', minWidth: 0 }} />
+                  <input type="color" value={newSubject.color} onChange={e => setNewSubject({...newSubject, color: e.target.value})} style={{ width: '30px', padding: '0', height: '100%', borderRadius: '4px', border: 'none', background: 'none', cursor: 'pointer' }} />
+                  <button type="button" onClick={handleSaveNewSubject} style={{ padding: '0 0.5rem', background: 'var(--primary)', color: 'white', borderRadius: '4px', border: 'none', cursor: 'pointer' }}>✓</button>
+                  <button type="button" onClick={() => setIsAddingSubject(false)} style={{ padding: '0 0.5rem', background: '#e2e8f0', borderRadius: '4px', border: 'none', cursor: 'pointer' }}>✕</button>
+                </div>
+              ) : (
+                <select value={formData.subject_id || ''} onChange={e => {
+                  if (e.target.value === 'NEW') setIsAddingSubject(true);
+                  else setFormData({...formData, subject_id: e.target.value});
+                }} style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #ccc' }}>
+                  <option value="">Không có</option>
+                  {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                  <option value="NEW" style={{ fontWeight: 'bold', color: '#2563eb' }}>+ Thêm môn học mới</option>
+                </select>
+              )}
             </div>
             <div>
               <label style={{ display: 'block', marginBottom: '0.25rem', fontWeight: 'bold' }}>Mức độ ưu tiên</label>
