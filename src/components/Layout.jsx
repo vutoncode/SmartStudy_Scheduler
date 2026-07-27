@@ -18,7 +18,6 @@ const Layout = () => {
           display: 'flex', alignItems: 'center', justifyContent: 'flex-end', padding: '0 2rem'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <NotificationCenter />
             <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
               {user?.email}
             </div>

@@ -74,10 +74,56 @@ const Dashboard = () => {
     </div>
   );
 
+  // --- Generate Sample Data ---
+  const generateSampleData = async () => {
+    if (!window.confirm("Bạn có muốn tạo 20 nhiệm vụ mẫu không?")) return;
+    setLoading(true);
+    try {
+      const sampleSubjects = [
+        { name: 'Đại số', color: '#ef4444' },
+        { name: 'Vật lý', color: '#3b82f6' },
+        { name: 'Lịch sử', color: '#eab308' },
+        { name: 'Sinh học', color: '#22c55e' }
+      ];
+      
+      for (let s of sampleSubjects) {
+        await fetchWithAuth('/api/subjects', { method: 'POST', body: JSON.stringify(s) });
+      }
+      const subjects = await fetchWithAuth('/api/subjects');
+      
+      const now = new Date();
+      for (let i = 1; i <= 20; i++) {
+        const sub = subjects[Math.floor(Math.random() * subjects.length)];
+        const isDone = Math.random() > 0.6;
+        const deadline = new Date(now.getTime() + (Math.random() * 14 - 7) * 24 * 60 * 60 * 1000);
+        
+        await fetchWithAuth('/api/tasks', {
+          method: 'POST',
+          body: JSON.stringify({
+            title: `Bài tập mẫu số ${i}`,
+            description: `Đây là mô tả mẫu cho bài tập ${i}...`,
+            subject_id: sub.id,
+            deadline: deadline.toISOString(),
+            priority: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)],
+            status: isDone ? 'done' : 'todo'
+          })
+        });
+      }
+      alert('Đã tạo 20 dữ liệu mẫu thành công!');
+      loadTasks();
+    } catch (err) {
+      alert("Lỗi: " + err.message);
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
-      <div className="page-header">
+      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1 className="page-title">Quản lý</h1>
+        <button onClick={generateSampleData} style={{ padding: '0.5rem 1rem', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
+          Tạo 20 dữ liệu mẫu
+        </button>
       </div>
 
       {loading ? <p>Đang tải dữ liệu...</p> : (
